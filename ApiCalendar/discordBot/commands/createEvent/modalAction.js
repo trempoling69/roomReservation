@@ -16,7 +16,7 @@ const modalAction = async (interaction) => {
   const endDateString = interaction.fields.getTextInputValue('EventEndDate');
   const title = interaction.fields.getTextInputValue('EventTitle');
   const description = interaction.fields.getTextInputValue('EventDescription');
-  const company = interaction.fields.getTextInputValue('EventCompany');
+  const room = interaction.fields.getTextInputValue('Eventroom');
   const startDate = new Date(startDateString);
   const endDate = new Date(endDateString);
   if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
@@ -39,7 +39,7 @@ const modalAction = async (interaction) => {
   const collectorFilter = (reaction, user) => {
     return ['✅', '❌'].includes(reaction.emoji.name) && user.id === interaction.user.id;
   };
-  const askValidation = successModalCreateEvent(startDate, endDate, title, description, company);
+  const askValidation = successModalCreateEvent(startDate, endDate, title, description, room);
   const validationMessage = await interaction.reply({ embeds: [askValidation], fetchReply: true });
   await Promise.all([validationMessage.react('✅'), validationMessage.react('❌')]);
   const collected = await validationMessage.awaitReactions({
@@ -50,15 +50,7 @@ const modalAction = async (interaction) => {
   });
   const reaction = collected.first();
   if (reaction.emoji.name === '✅') {
-    let color;
-    if (company === 'AKANEMA') {
-      color = '1';
-    } else if (company === 'UNIVR') {
-      color = '2';
-    } else {
-      color = '3';
-    }
-    const postEventReponse = await postEvent(title, startDate, endDate, color, description);
+    const postEventReponse = await postEvent(title, startDate, endDate, description, room);
     if (postEventReponse.status === 200) {
       interaction.channel.bulkDelete([validationMessage.id], true);
       const confirmationMessage = confirmMessageSuccessPostEvent(
@@ -66,7 +58,7 @@ const modalAction = async (interaction) => {
         endDate,
         title,
         description,
-        company,
+        room,
         postEventReponse.htmlLink
       );
       interaction.channel.send({ embeds: [confirmationMessage] });

@@ -72,19 +72,12 @@ const formatEventChunk = (eventChunk, chunkNumber) => {
       start = new Date(event.start.dateTime).toLocaleString();
       end = new Date(event.end.dateTime).toLocaleString();
     }
-    let company;
-    if (event.colorId === '1') {
-      company = 'AKANEMA';
-    } else if (event.colorId === '2') {
-      company = 'UNIVR';
-    } else {
-      company = 'N/D';
-    }
+
     const eventText =
       `${eventIndex}. [${event.id}] - ${event.summary}\n` +
       `   - Date de début : ${start}\n` +
       `   - Date de fin : ${end}\n` +
-      `   - Entreprise : ${company}\n\n`;
+      `   - Salle : TODO \n\n`;
 
     eventList += eventText;
   });

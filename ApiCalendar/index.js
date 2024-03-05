@@ -23,7 +23,6 @@ const rest = new REST({ version: '10' }).setToken(token);
     console.log(err);
   }
 })();
-
 const calendarRoutes = require('./routes/calendar');
 
 app.use('/calendar', calendarRoutes);

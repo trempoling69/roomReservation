@@ -14,10 +14,10 @@ const getEventsWithTimeMax = async (timeMax) => {
     throw err;
   }
 };
-const getEventsLifeTime = async () => {
+const getEventsLifeTime = async (calendarId) => {
   try {
     const response = await calendar.events.list({
-      calendarId: process.env.CALENDAR_ID,
+      calendarId: calendarId,
       timeMin: new Date().toISOString(),
       singleEvents: true,
       orderBy: 'startTime',

@@ -3,13 +3,13 @@ require('dotenv').config();
 
 const descriptionMeetingGetReact = (startDate, endDate, title, description) => {
   return new EmbedBuilder()
-    .setTitle('Créer une réunion')
+    .setTitle('Créer une réservation')
     .setColor(0x05b200)
     .setAuthor({
       name: 'Maitre de la salle',
       iconURL: process.env.LINK_AVATAR_AUTOR,
     })
-    .setDescription('Vous venez de réaliser une demande pour reserver la salle de réunion')
+    .setDescription('Vous venez de réaliser une demande pour reserver la salle')
     .setThumbnail(
       'https://www.shutterstock.com/image-vector/shield-protection-security-icon-vector-260nw-1410260336.jpg'
     )
@@ -18,48 +18,24 @@ const descriptionMeetingGetReact = (startDate, endDate, title, description) => {
       { name: 'Date de fin', value: `${endDate.toLocaleString()}`, inline: true }
     )
     .addFields(
-      { name: 'Nom de la réunion', value: `${title}`, inline: true },
-      { name: 'Description de la réunion', value: `${description}`, inline: true }
+      { name: 'Nom de la réservation', value: `${title}`, inline: true },
+      { name: 'Description de la réservation', value: `${description}`, inline: true }
     )
     .addFields({
       name: 'Dernière chose',
       value: 'Réagissez avec 🔴 pour reserver en tant que AKANEMA et avec 🟠 pour reserver en tant que UNIVR',
     })
     .setFooter({
-      text: 'Reservation salle réunion',
+      text: 'Reservation de salle',
       iconURL: process.env.LINK_AVATAR_AUTOR,
     })
     .setTimestamp();
 };
 
-const initilisationMessageGetTitleDescription = (startDate, endDate) => {
-  return new EmbedBuilder()
-    .setAuthor({
-      name: 'Maitre de la salle',
-      iconURL: process.env.LINK_AVATAR_AUTOR,
-    })
-    .setColor(0xfff700)
-    .setTitle("Demande d'information supplémentaire sur la réunion")
-    .setThumbnail(process.env.LINK_AVATAR_AUTOR)
-    .addFields(
-      { name: 'Date de début', value: `${startDate.toLocaleString()}`, inline: true },
-      { name: 'Date de fin', value: `${endDate.toLocaleString()}`, inline: true }
-    )
-    .addFields({
-      name: 'Action à réaliser',
-      value:
-        "Je vais maintenant vous demander de m'envoyer **deux messages différents**, l'un avec votre **titre** pour la réunion l'autre avec sa **description**",
-    })
-    .setTimestamp()
-    .setFooter({
-      text: "Prise d'information",
-      iconURL: process.env.LINK_AVATAR_AUTOR,
-    });
-};
 
-const confirmMessageSuccessPostEvent = (startDate, endDate, title, description, company, link) => {
+const confirmMessageSuccessPostEvent = (startDate, endDate, title, description, room, link) => {
   return new EmbedBuilder()
-    .setTitle('Confirmation de réservation de la salle de réunion')
+    .setTitle('Confirmation de réservation de la salle')
     .setColor(0x05b200)
     .setAuthor({
       name: 'Maitre de la salle',
@@ -74,19 +50,19 @@ const confirmMessageSuccessPostEvent = (startDate, endDate, title, description, 
       { name: 'Date de fin', value: `${endDate.toLocaleString()}`, inline: true }
     )
     .addFields(
-      { name: 'Nom de la réunion', value: `${title}` },
-      { name: 'Description de la réunion', value: `${description}`, inline: true }
+      { name: 'Nom de la réservation', value: `${title}` },
+      { name: 'Description de la réservation', value: `${description}`, inline: true }
     )
     .addFields(
       {
-        name: 'Réservez pour',
-        value: `${company}`,
+        name: 'Salle reservé',
+        value: `${room}`,
         inline: true,
       },
       { name: "Lien vers l'évènement", value: `${link}` }
     )
     .setFooter({
-      text: 'Reservation salle réunion',
+      text: 'Reservation salle',
       iconURL: process.env.LINK_AVATAR_AUTOR,
     })
     .setTimestamp();
@@ -125,7 +101,7 @@ const confirmMessageGetOneEventReactDelete = (id, title, description, startDate,
       { name: 'Confirmation demandée', value: 'Réagissez par ✅ pour valider la suppression', inline: true }
     )
     .setFooter({
-      text: 'Reservation salle réunion',
+      text: 'Reservation salle',
       iconURL: process.env.LINK_AVATAR_AUTOR,
     })
     .setTimestamp();
@@ -168,15 +144,15 @@ const confirmDeleteEvent = (date) => {
     });
 };
 
-const successModalCreateEvent = (startDate, endDate, title, description, company) => {
+const successModalCreateEvent = (startDate, endDate, title, description, room) => {
   return new EmbedBuilder()
-    .setTitle('Créer une réunion')
+    .setTitle('Créer une réservation')
     .setColor(0x05b200)
     .setAuthor({
       name: 'Maitre de la salle',
       iconURL: process.env.LINK_AVATAR_AUTOR,
     })
-    .setDescription('Vous venez de réaliser une demande pour reserver la salle de réunion')
+    .setDescription('Vous venez de réaliser une demande pour reserver une salle')
     .setThumbnail(
       'https://www.shutterstock.com/image-vector/shield-protection-security-icon-vector-260nw-1410260336.jpg'
     )
@@ -187,14 +163,14 @@ const successModalCreateEvent = (startDate, endDate, title, description, company
     .addFields(
       { name: 'Nom de la réunion', value: `${title}`, inline: true },
       { name: 'Description de la réunion', value: `${description}`, inline: true },
-      { name: 'Entreprise', value: `${company}`, inline: true }
+      { name: 'Salle', value: `${room}`, inline: true }
     )
     .addFields({
       name: 'Dernière chose',
       value: 'Réagissez avec ✅ pour valider la réservation et avec ❌ pour annuler la reservation',
     })
     .setFooter({
-      text: 'Reservation salle réunion',
+      text: 'Reservation de salle',
       iconURL: process.env.LINK_AVATAR_AUTOR,
     })
     .setTimestamp();
@@ -208,7 +184,7 @@ const successDismissEvent = () => {
       iconURL: process.env.LINK_AVATAR_AUTOR,
     })
     .setDescription(
-      "Vous venez d'annuler votre demande de reservation pour la salle de réunion. Aucun créneau n'a été reservé. Vous pouvez réessayer ou vaquer à vos occupations."
+      "Vous venez d'annuler votre demande de reservation pour la salle. Aucun créneau n'a été reservé. Vous pouvez réessayer ou vaquer à vos occupations."
     )
     .setFooter({
       text: 'Annulation reservation salle réunion',
@@ -218,7 +194,6 @@ const successDismissEvent = () => {
 };
 module.exports = {
   descriptionMeetingGetReact,
-  initilisationMessageGetTitleDescription,
   confirmMessageSuccessPostEvent,
   confirmMessageGetOneEventReactDelete,
   confirmationNotDeleteEvent,

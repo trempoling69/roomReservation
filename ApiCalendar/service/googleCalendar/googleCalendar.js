@@ -1,5 +1,5 @@
 const { google } = require('googleapis');
-const privatekey = require('../../apidiscordcalendar-18715d298531.json');
+const privatekey = require('../../apidiscordcalendar-dd50e7f5f881.json');
 
 const jwtClient = new google.auth.JWT(privatekey.client_email, null, privatekey.private_key, [
   'https://www.googleapis.com/auth/calendar',
