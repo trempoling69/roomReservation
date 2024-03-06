@@ -1,9 +1,9 @@
 const calendar = require('./googleCalendar.js');
 require('dotenv').config();
-const getEventsWithTimeMax = async (timeMax) => {
+const getEventsWithTimeMax = async (timeMax, calendarId) => {
   try {
     const response = await calendar.events.list({
-      calendarId: process.env.CALENDAR_ID,
+      calendarId: calendarId,
       timeMin: new Date().toISOString(),
       timeMax: timeMax,
       singleEvents: true,

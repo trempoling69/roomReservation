@@ -6,6 +6,7 @@ const getevent = require('./commands/getEvent');
 const createEvent = require('./commands/createEvent');
 const help = require('./commands/help');
 const deleteEvent = require('./commands/deleteEvent');
+const { generalError } = require('./messageBuilder/errorMessage');
 
 const client = new Client({
   intents: [
@@ -34,7 +35,12 @@ client.on('interactionCreate', async (interaction) => {
   if (interaction.commandName === 'ping') {
     await play.execute(interaction);
   } else if (interaction.commandName === 'getevent') {
-    await getevent.execute(interaction);
+    try {
+      await getevent.execute(interaction);
+    } catch (err) {
+      const errorRequest = generalError('/getevent');
+      return interaction.followUp({ embeds: [errorRequest] });
+    }
   } else if (interaction.commandName === 'create') {
     await createEvent.execute(interaction);
   } else if (interaction.commandName === 'help') {

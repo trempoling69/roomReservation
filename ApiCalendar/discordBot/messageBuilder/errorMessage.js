@@ -113,10 +113,32 @@ const errorGeneralRequest = (errorType, errorDescription, errorMessage) => {
     })
     .setTimestamp();
 };
+const generalError = (commandName) => {
+  return new EmbedBuilder()
+    .setTitle(`Mince ! Un problème est servenu.`)
+    .setDescription(`Une erreur est survenue lors de l'exectution de la commande **${commandName}**`)
+    .setColor(0xff0000)
+    .setAuthor({
+      name: 'Robot pas content',
+      iconURL: process.env.LINK_AVATAR_AUTOR,
+    })
+    .setThumbnail('https://www.shutterstock.com/image-vector/error-icon-260nw-696697762.jpg')
+    .addFields({
+      name: 'Info',
+      value:
+        'Il se peut que ce soit un problème avec la syntaxe de la commande vérifiez cela avec la commande **/help**',
+    })
+    .setFooter({
+      text: 'Erreur de commande',
+      iconURL: process.env.LINK_AVATAR_AUTOR,
+    })
+    .setTimestamp();
+};
 module.exports = {
   errorFormatDateReservation,
   errorUseCommandReservation,
   errorAvailibityMeetingRoom,
   errorUseCommandSupprimer,
   errorGeneralRequest,
+  generalError,
 };

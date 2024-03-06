@@ -1,9 +1,8 @@
 const express = require('express');
-const { getAllEvent } = require('../controller/controllerCalendar');
-const postEvent = require('../service/googleCalendar/postEvent');
+const { getAllEvent, createEvent } = require('../controller/controllerCalendar');
 const router = express.Router();
 
 router.get('/', getAllEvent);
-router.post('/', postEvent);
+router.post('/', createEvent);
 
 module.exports = router;

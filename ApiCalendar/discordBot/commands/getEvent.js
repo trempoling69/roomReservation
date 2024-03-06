@@ -1,11 +1,24 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { getEventsWithTimeMax, getEventsLifeTime } = require('../../service/googleCalendar/getEvents');
+const calendarRoom = require('../../data/calendarRoom');
 const chunkSize = 5;
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('getevent')
     .setDescription('Obtenir les évènements à venir')
+    .addStringOption((option) =>
+      option
+        .setName('room')
+        .setDescription("Vérifier la disponibilité d'une salle en particulier")
+        .setRequired(true)
+        .addChoices(
+          { name: 'Toutes', value: 'all' },
+          ...calendarRoom.map((obj) => {
+            return { name: obj.name, value: obj.id };
+          })
+        )
+    )
     .addStringOption((option) =>
       option
         .setName('period')
@@ -19,24 +32,36 @@ module.exports = {
     ),
   async execute(interaction) {
     const period = interaction.options.getString('period');
+    const roomId = interaction.options.getString('room');
     console.log(period);
     const currentDate = new Date();
     let timeMax;
-    if (period === 'day') {
-      const endDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
-      timeMax = endDate.toISOString();
-    }
-    if (period === 'week') {
-      const endOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 7);
-      timeMax = endOfWeek.toISOString();
-    }
     await interaction.deferReply();
-    let events;
-    if (period === 'day' || period === 'week') {
-      events = await getEventsWithTimeMax(timeMax);
-    } else {
-      events = await getEventsLifeTime();
+    switch (period) {
+      case 'day':
+        const endDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
+        timeMax = endDate.toISOString();
+      case 'week':
+        const endOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 7);
+        timeMax = endOfWeek.toISOString();
+      default:
+        timeMax = undefined;
     }
+    // if (period === 'day') {
+    //   const endDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
+    //   timeMax = endDate.toISOString();
+    // }
+    // if (period === 'week') {
+    //   const endOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 7);
+    //   timeMax = endOfWeek.toISOString();
+    // }
+    // let events;
+    // if (period === 'day' || period === 'week') {
+    //   events = await getEventsWithTimeMax(timeMax);
+    // } else {
+    //   events = await getEventsLifeTime();
+    // }
+    const events = await getEventsWithTimeMax(timeMax, roomId);
     if (events.length) {
       const eventChunks = chunkEvents(events);
       eventChunks.forEach((eventChunk, index) => {

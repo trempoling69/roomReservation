@@ -1,5 +1,6 @@
 const calendarRoom = require('../data/calendarRoom');
-const { getEventsLifeTime } = require('../service/googleCalendar/getEvents');
+const checkavailability = require('../service/googleCalendar/checkAvailibility');
+const { getEventsWithTimeMax } = require('../service/googleCalendar/getEvents');
 const postEvent = require('../service/googleCalendar/postEvent');
 
 const getAllEvent = async (req, res) => {
@@ -24,9 +25,15 @@ const getAllEvent = async (req, res) => {
       }
     }
   }
-  console.log(idRoomToCheck);
+  let endDate;
+  if (query.endDate) {
+    const date = new Date(query.endDate);
+    if (!isNaN(date.getTime())) {
+      endDate = new Date(query.endDate).toISOString();
+    }
+  }
   const fetchCalendar = async (id) => {
-    const response = await getEventsLifeTime(id);
+    const response = await getEventsWithTimeMax(endDate, id);
     return response;
   };
   const rowEvents = await Promise.all(idRoomToCheck.map((id) => fetchCalendar(id)));
@@ -48,16 +55,28 @@ const getAllEvent = async (req, res) => {
 const createEvent = async (req, res) => {
   try {
     const { summary, start, end, description, roomName } = req.body;
-    const roomId = calendarRoom.find((room) => room.name === roomName);
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      throw new Error('Erreur format de date');
+    }
+    const roomId = calendarRoom.find((room) => room.name === roomName)?.id;
     if (!roomId) {
       throw new Error('Pas de salle correspondante');
     }
-    const eventCreated = await postEvent(summary, start, end, description, roomId);
+    const availability = await checkavailability(startDate, endDate, roomId);
+    if (!availability.availibility) {
+      throw new Error('Salle non disponible');
+    }
+    const eventCreated = await postEvent(summary, startDate, endDate, description, roomId);
     if (eventCreated.status !== 200) {
       throw new Error(`Erreur lors de la création : ${eventCreated.errorMessage}`);
     }
-    res.send(eventCreated);
-  } catch (err) {}
+    res.json(eventCreated);
+  } catch (err) {
+    console.log(err);
+    res.json({ status: 500, error: err.message });
+  }
 };
 
 module.exports = { getAllEvent, createEvent };
