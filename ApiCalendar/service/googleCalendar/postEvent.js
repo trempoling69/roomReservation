@@ -1,9 +1,8 @@
 const calendar = require('./googleCalendar.js');
 const checkavailability = require('./checkAvailibility.js');
-const calendarRoomId = require('../../data/calendarRoomId.js');
 require('dotenv').config();
 
-const postEvent = async (summary, start, end, description, room) => {
+const postEvent = async (summary, start, end, description, roomId) => {
   const response = { status: null, htmlLink: null, errorMessage: null };
   try {
     const isAvailable = await checkavailability(start, end);
@@ -21,7 +20,7 @@ const postEvent = async (summary, start, end, description, room) => {
         description,
         sendUpdates: 'all',
       };
-      const resp = await calendar.events.insert({ calendarId: calendarRoomId[room], resource: event });
+      const resp = await calendar.events.insert({ calendarId: roomId, resource: event });
       response.status = resp.status;
       response.htmlLink = resp.data.htmlLink;
     }

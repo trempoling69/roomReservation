@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
-const calendarRoomId = require('../../../data/calendarRoomId');
+const calendarRoom = require('../../../data/calendarRoom');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -12,7 +12,7 @@ module.exports = {
         .setDescription("Entreprise pour laquelle créer l'évent")
         .setRequired(true)
         .addChoices(
-          ...calendarRoomId.map((obj) => {
+          ...calendarRoom.map((obj) => {
             return { name: obj.name, value: obj.id };
           })
         )

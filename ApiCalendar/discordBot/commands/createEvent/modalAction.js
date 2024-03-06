@@ -10,20 +10,22 @@ const {
   successDismissEvent,
 } = require('../../messageBuilder/successMessage');
 const postEvent = require('../../../service/googleCalendar/postEvent');
+const calendarRoom = require('../../../data/calendarRoom');
 
 const modalAction = async (interaction) => {
   const startDateString = interaction.fields.getTextInputValue('EventStartDate');
   const endDateString = interaction.fields.getTextInputValue('EventEndDate');
   const title = interaction.fields.getTextInputValue('EventTitle');
   const description = interaction.fields.getTextInputValue('EventDescription');
-  const room = interaction.fields.getTextInputValue('Eventroom');
+  const roomId = interaction.fields.getTextInputValue('Eventroom');
+  const roomName = calendarRoom.find((room) => room.id === roomId)?.name;
   const startDate = new Date(startDateString);
   const endDate = new Date(endDateString);
   if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
     const error = errorFormatDateReservation;
     return interaction.reply({ embeds: [error] });
   }
-  const availibility = await checkavailability(startDate, endDate);
+  const availibility = await checkavailability(startDate, endDate, roomId);
   if (availibility.status !== 200) {
     const errorRequest = errorGeneralRequest(
       'durant la requête de vérification de disponibilité',
@@ -39,7 +41,7 @@ const modalAction = async (interaction) => {
   const collectorFilter = (reaction, user) => {
     return ['✅', '❌'].includes(reaction.emoji.name) && user.id === interaction.user.id;
   };
-  const askValidation = successModalCreateEvent(startDate, endDate, title, description, room);
+  const askValidation = successModalCreateEvent(startDate, endDate, title, description, roomName);
   const validationMessage = await interaction.reply({ embeds: [askValidation], fetchReply: true });
   await Promise.all([validationMessage.react('✅'), validationMessage.react('❌')]);
   const collected = await validationMessage.awaitReactions({
@@ -50,7 +52,7 @@ const modalAction = async (interaction) => {
   });
   const reaction = collected.first();
   if (reaction.emoji.name === '✅') {
-    const postEventReponse = await postEvent(title, startDate, endDate, description, room);
+    const postEventReponse = await postEvent(title, startDate, endDate, description, roomId);
     if (postEventReponse.status === 200) {
       interaction.channel.bulkDelete([validationMessage.id], true);
       const confirmationMessage = confirmMessageSuccessPostEvent(
@@ -58,7 +60,7 @@ const modalAction = async (interaction) => {
         endDate,
         title,
         description,
-        room,
+        roomName,
         postEventReponse.htmlLink
       );
       interaction.channel.send({ embeds: [confirmationMessage] });

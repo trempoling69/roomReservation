@@ -1,13 +1,13 @@
 const calendar = require('./googleCalendar.js');
 require('dotenv').config();
-const checkavailability = async (start, end) => {
+const checkavailability = async (start, end, roomId) => {
   const response = { status: null, error: null, availibility: null };
   const startDate = new Date(start);
   const endDate = new Date(end);
   const freeBusyQuery = {
     timeMin: startDate.toISOString(),
     timeMax: endDate.toISOString(),
-    items: [{ id: process.env.CALENDAR_ID }],
+    items: [{ id: roomId }],
   };
   try {
     const resp = await calendar.freebusy.query({
