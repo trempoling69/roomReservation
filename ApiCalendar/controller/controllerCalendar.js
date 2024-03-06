@@ -7,7 +7,7 @@ const getAllEvent = async (req, res) => {
   const query = req.query;
   console.log(query);
   const idRoomToCheck = [];
-  if (Object.keys(query).length === 0) {
+  if (!query.salle) {
     calendarRoom.map((room) => idRoomToCheck.push(room.id));
   } else {
     const roomToCheck = query.salle;

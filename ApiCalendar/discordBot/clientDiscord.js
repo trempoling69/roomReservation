@@ -38,15 +38,28 @@ client.on('interactionCreate', async (interaction) => {
     try {
       await getevent.execute(interaction);
     } catch (err) {
+      console.log(err);
       const errorRequest = generalError('/getevent');
       return interaction.followUp({ embeds: [errorRequest] });
     }
   } else if (interaction.commandName === 'create') {
-    await createEvent.execute(interaction);
+    try {
+      await createEvent.execute(interaction);
+    } catch (err) {
+      console.log(err);
+      const errorRequest = generalError('/create');
+      return interaction.followUp({ embeds: [errorRequest] });
+    }
   } else if (interaction.commandName === 'help') {
     await help.execute(interaction);
   } else if (interaction.commandName === 'delete') {
-    await deleteEvent.execute(interaction);
+    try {
+      await deleteEvent.execute(interaction);
+    } catch (err) {
+      console.log(err);
+      const errorRequest = generalError('/delete');
+      return interaction.followUp({ embeds: [errorRequest] });
+    }
   }
 });
 

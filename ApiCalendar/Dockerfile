@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 3003
 
-CMD [ "node", "votre_fichier_principal.js" ]
+CMD [ "node", "index.js" ]

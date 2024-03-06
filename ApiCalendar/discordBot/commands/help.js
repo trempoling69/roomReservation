@@ -5,23 +5,23 @@ module.exports = {
   data: new SlashCommandBuilder().setName('help').setDescription('Description de toutes les commandes possible'),
   async execute(interaction) {
     const helpEmbedsMessage = new EmbedBuilder()
-      .setColor(0xFFB200)
+      .setColor(0xffb200)
       .setAuthor({
         name: 'Maitre de la salle',
         iconURL: process.env.LINK_AVATAR_AUTOR,
-      }) 
+      })
       .setTitle('Guide des commandes')
       .setDescription('Je vais vous montrer tout ce que vous pouvez faire avec moi')
       .addFields(
         {
-          name: '/create {entreprise}',
+          name: '/create {salle}',
           value:
-            "Cette commande permet de créer un évènement. Il prend AKANEMA ou UNIVR en option afin d'attribuer une couleur à l'évènement. Pour l'utiliser il suffit de faire la commande et ensuite remplir la modal qui s'affiche en respectant bien le format des dates.",
+            "Cette commande permet de créer un évènement. Il prend une salle en paramètre. Pour l'utiliser il suffit de faire la commande et ensuite remplir la modal qui s'affiche en respectant bien le format des dates.",
         },
         {
-          name: '/getevent {periode}',
+          name: '/getevent {room} {period}',
           value:
-            "Cette commande permet d'afficher tous les évènements à venir. L'option peut être Jour, Semaine ou All time. **Jour** permet d'obtenir les event dans la journée, **semaine** dans la semaine et **all time** tous les évènements sans limite de temps.",
+            "Cette commande permet d'afficher tous les évènements à venir.L'option {room} permet de spécifier une salle à inspecter. L'option {period} peut être Jour, Semaine ou All time. **Jour** permet d'obtenir les event dans la journée, **semaine** dans la semaine et **all time** tous les évènements sans limite de temps.",
         },
         {
           name: '/delete {id_event}',

@@ -32,36 +32,42 @@ module.exports = {
     ),
   async execute(interaction) {
     const period = interaction.options.getString('period');
-    const roomId = interaction.options.getString('room');
-    console.log(period);
+    const inputRoom = interaction.options.getString('room');
+    let roomArrayId = [];
+    if (inputRoom === 'all') {
+      calendarRoom.map((room) => roomArrayId.push(room.id));
+    } else {
+      roomArrayId.push(inputRoom);
+    }
     const currentDate = new Date();
     let timeMax;
     await interaction.deferReply();
+    console.log(period);
     switch (period) {
       case 'day':
         const endDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
         timeMax = endDate.toISOString();
+        break;
       case 'week':
         const endOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 7);
         timeMax = endOfWeek.toISOString();
+        break;
       default:
         timeMax = undefined;
+        break;
     }
-    // if (period === 'day') {
-    //   const endDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
-    //   timeMax = endDate.toISOString();
-    // }
-    // if (period === 'week') {
-    //   const endOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 7);
-    //   timeMax = endOfWeek.toISOString();
-    // }
-    // let events;
-    // if (period === 'day' || period === 'week') {
-    //   events = await getEventsWithTimeMax(timeMax);
-    // } else {
-    //   events = await getEventsLifeTime();
-    // }
-    const events = await getEventsWithTimeMax(timeMax, roomId);
+    console.log(timeMax);
+    const fetchCalendar = async (id) => {
+      const response = await getEventsWithTimeMax(timeMax, id);
+      return response;
+    };
+    const rowEvents = await Promise.all(roomArrayId.map((id) => fetchCalendar(id)));
+    const events = [];
+    rowEvents.map((roomEvent) => {
+      return roomEvent.map((event) => {
+        events.push(event);
+      });
+    });
     if (events.length) {
       const eventChunks = chunkEvents(events);
       eventChunks.forEach((eventChunk, index) => {
@@ -90,19 +96,20 @@ const formatEventChunk = (eventChunk, chunkNumber) => {
     const eventIndex = multiplier + index + 1;
     let start;
     let end;
+    const room = calendarRoom.find((room) => room.id === event.organizer.email)?.name || 'Erreur salle';
     if (event.start.dateTime === undefined) {
-      start = new Date(event.start.date).toLocaleString();
-      end = new Date(event.end.date).toLocaleString();
+      start = new Date(event.start.date).toLocaleString('fr-FR');
+      end = new Date(event.end.date).toLocaleString('fr-FR');
     } else {
-      start = new Date(event.start.dateTime).toLocaleString();
-      end = new Date(event.end.dateTime).toLocaleString();
+      start = new Date(event.start.dateTime).toLocaleString('fr-FR');
+      end = new Date(event.end.dateTime).toLocaleString('fr-FR');
     }
 
     const eventText =
       `${eventIndex}. [${event.id}] - ${event.summary}\n` +
       `   - Date de début : ${start}\n` +
       `   - Date de fin : ${end}\n` +
-      `   - Salle : TODO \n\n`;
+      `   - Salle : ${room} \n\n`;
 
     eventList += eventText;
   });

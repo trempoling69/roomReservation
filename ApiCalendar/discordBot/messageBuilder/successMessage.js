@@ -14,8 +14,8 @@ const descriptionMeetingGetReact = (startDate, endDate, title, description) => {
       'https://www.shutterstock.com/image-vector/shield-protection-security-icon-vector-260nw-1410260336.jpg'
     )
     .addFields(
-      { name: 'Date de début', value: `${startDate.toLocaleString()}`, inline: true },
-      { name: 'Date de fin', value: `${endDate.toLocaleString()}`, inline: true }
+      { name: 'Date de début', value: `${startDate.toLocaleString('fr-FR')}`, inline: true },
+      { name: 'Date de fin', value: `${endDate.toLocaleString('fr-FR')}`, inline: true }
     )
     .addFields(
       { name: 'Nom de la réservation', value: `${title}`, inline: true },
@@ -32,7 +32,6 @@ const descriptionMeetingGetReact = (startDate, endDate, title, description) => {
     .setTimestamp();
 };
 
-
 const confirmMessageSuccessPostEvent = (startDate, endDate, title, description, room, link) => {
   return new EmbedBuilder()
     .setTitle('Confirmation de réservation de la salle')
@@ -46,8 +45,8 @@ const confirmMessageSuccessPostEvent = (startDate, endDate, title, description, 
       'https://www.shutterstock.com/image-vector/shield-protection-security-icon-vector-260nw-1410260336.jpg'
     )
     .addFields(
-      { name: 'Date de début', value: `${startDate.toLocaleString()}`, inline: true },
-      { name: 'Date de fin', value: `${endDate.toLocaleString()}`, inline: true }
+      { name: 'Date de début', value: `${startDate.toLocaleString('fr-FR')}`, inline: true },
+      { name: 'Date de fin', value: `${endDate.toLocaleString('fr-FR')}`, inline: true }
     )
     .addFields(
       { name: 'Nom de la réservation', value: `${title}` },
@@ -81,8 +80,8 @@ const confirmMessageGetOneEventReactDelete = (id, title, description, startDate,
       'https://www.shutterstock.com/image-vector/shield-protection-security-icon-vector-260nw-1410260336.jpg'
     )
     .addFields(
-      { name: 'Date de début', value: `${startDate.toLocaleString()}`, inline: true },
-      { name: 'Date de fin', value: `${endDate.toLocaleString()}`, inline: true }
+      { name: 'Date de début', value: `${startDate.toLocaleString('fr-FR')}`, inline: true },
+      { name: 'Date de fin', value: `${endDate.toLocaleString('fr-FR')}`, inline: true }
     )
     .addFields(
       { name: 'Nom de la réunion', value: `${title}` },
@@ -157,8 +156,8 @@ const successModalCreateEvent = (startDate, endDate, title, description, room) =
       'https://www.shutterstock.com/image-vector/shield-protection-security-icon-vector-260nw-1410260336.jpg'
     )
     .addFields(
-      { name: 'Date de début', value: `${startDate.toLocaleString()}`, inline: true },
-      { name: 'Date de fin', value: `${endDate.toLocaleString()}`, inline: true }
+      { name: 'Date de début', value: `${startDate.toLocaleString('fr-FR')}`, inline: true },
+      { name: 'Date de fin', value: `${endDate.toLocaleString('fr-FR')}`, inline: true }
     )
     .addFields(
       { name: 'Nom de la réunion', value: `${title}`, inline: true },
@@ -175,6 +174,7 @@ const successModalCreateEvent = (startDate, endDate, title, description, room) =
     })
     .setTimestamp();
 };
+
 const successDismissEvent = () => {
   return new EmbedBuilder()
     .setTitle('Annulation de la création')
@@ -192,6 +192,7 @@ const successDismissEvent = () => {
     })
     .setTimestamp();
 };
+
 module.exports = {
   descriptionMeetingGetReact,
   confirmMessageSuccessPostEvent,
