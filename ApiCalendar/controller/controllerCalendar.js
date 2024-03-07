@@ -79,4 +79,34 @@ const createEvent = async (req, res) => {
   }
 };
 
-module.exports = { getAllEvent, createEvent };
+const getStatusRoom = async (req, res) => {
+  try {
+    const { startCheck, endCheck } = req.query;
+    const actualDate = new Date();
+    const startDate = new Date(actualDate.toISOString().split('T')[0] + 'T' + startCheck);
+    const endDate = new Date(actualDate.toISOString().split('T')[0] + 'T' + endCheck);
+    // const startDate = new Date(startCheck);
+    // const endDate = new Date(endCheck);
+    console.log(startDate, endDate);
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      throw new Error('Problème de format de date');
+    }
+    const allRooms = [calendarRoom[0], calendarRoom[1]];
+    const formatCheckAvailability = async (startDate, endDate, calendarId, calendarName) => {
+      const check = await checkavailability(startDate, endDate, calendarId);
+      return {
+        status: check.availibility,
+        salle: calendarName,
+      };
+    };
+    const availability = await Promise.all(
+      allRooms.map((room) => formatCheckAvailability(startDate, endDate, room.id, room.name))
+    );
+    res.send(availability);
+  } catch (err) {
+    console.log(err);
+    res.json({ status: 500, error: err.message });
+  }
+};
+
+module.exports = { getAllEvent, createEvent, getStatusRoom };

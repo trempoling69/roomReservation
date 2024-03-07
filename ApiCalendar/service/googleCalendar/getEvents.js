@@ -27,7 +27,23 @@ const getEventsLifeTime = async (calendarId) => {
     throw err;
   }
 };
+
+const getSpecificRangeEvents = async (startTime, endTime, calendarId) => {
+  try {
+    const response = await calendar.events.list({
+      calendarId: calendarId,
+      timeMin: startTime.toISOString(),
+      timeMax: endTime.toISOString(),
+      singleEvents: true,
+      orderBy: 'startTime',
+    });
+    return response.data.items;
+  } catch (err) {
+    throw err;
+  }
+};
 module.exports = {
   getEventsWithTimeMax,
   getEventsLifeTime,
+  getSpecificRangeEvents,
 };
