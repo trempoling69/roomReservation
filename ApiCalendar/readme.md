@@ -2,9 +2,4 @@
 
 ## Fonctionnalité
 
-Ce bot permet de gérer une salle de réunion commune à deux entreprises,
-il permet de reserver des créneaux, vérifier la disponibilité et supprimer un évènement.
-Afin de gérer les créneaux, ce bot est relié à un google Agenda dédié à cette salle. 
-
-Actuellement la gestion a été réalisée avec des slashCommand et des commandes avec préfix,
-c'était simplement pour que je test les deux :)
+Projet FabLab de création de réservation de salle relié à un arduino qui permet de réserver sur place des salles et de consulter l'états de salles heures par heures
