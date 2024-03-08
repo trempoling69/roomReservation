@@ -7,6 +7,7 @@ const createEvent = require('./commands/createEvent');
 const help = require('./commands/help');
 const deleteEvent = require('./commands/deleteEvent');
 const { generalError } = require('./messageBuilder/errorMessage');
+const getActualAvailableRoom = require('./commands/getActualAvailableRoom');
 
 const client = new Client({
   intents: [
@@ -24,6 +25,7 @@ client.commands.set(getevent.data.name, getevent);
 client.commands.set(createEvent.data.name, createEvent);
 client.commands.set(help.data.name, help);
 client.commands.set(deleteEvent.data.name, deleteEvent);
+client.commands.set(getActualAvailableRoom.data.name, getActualAvailableRoom);
 
 client.on('ready', () => {
   console.log('Félicitations, votre bot Discord a été correctement initialisé !');
@@ -58,6 +60,14 @@ client.on('interactionCreate', async (interaction) => {
     } catch (err) {
       console.log(err);
       const errorRequest = generalError('/delete');
+      return interaction.followUp({ embeds: [errorRequest] });
+    }
+  } else if (interaction.commandName === 'availableroom') {
+    try {
+      await getActualAvailableRoom.execute(interaction);
+    } catch (err) {
+      console.log(err);
+      const errorRequest = generalError('/availableroom');
       return interaction.followUp({ embeds: [errorRequest] });
     }
   }

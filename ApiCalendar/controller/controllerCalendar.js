@@ -55,8 +55,19 @@ const getAllEvent = async (req, res) => {
 const createEvent = async (req, res) => {
   try {
     const { summary, start, end, description, roomName } = req.body;
-    const startDate = new Date(start);
-    const endDate = new Date(end);
+    const formatHeure = (heure) => {
+      const [heures, minutes, secondes] = heure.split(':').map(Number);
+      const heureFormatee = `${String(heures).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(
+        secondes
+      ).padStart(2, '0')}`;
+      console.log(heureFormatee);
+      return heureFormatee;
+    };
+    const actualDate = new Date();
+    const startDate = new Date(actualDate.toISOString().split('T')[0] + 'T' + formatHeure(start));
+    const endDate = new Date(actualDate.toISOString().split('T')[0] + 'T' + formatHeure(end));
+    console.log(startDate, start);
+    console.log(endDate, end);
     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
       throw new Error('Erreur format de date');
     }
@@ -82,11 +93,16 @@ const createEvent = async (req, res) => {
 const getStatusRoom = async (req, res) => {
   try {
     const { startCheck, endCheck } = req.query;
+    const formatHeure = (heure) => {
+      const [heures, minutes, secondes] = heure.split(':').map(Number);
+      const heureFormatee = `${String(heures).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(
+        secondes
+      ).padStart(2, '0')}`;
+      return heureFormatee;
+    };
     const actualDate = new Date();
-    const startDate = new Date(actualDate.toISOString().split('T')[0] + 'T' + startCheck);
-    const endDate = new Date(actualDate.toISOString().split('T')[0] + 'T' + endCheck);
-    // const startDate = new Date(startCheck);
-    // const endDate = new Date(endCheck);
+    const startDate = new Date(actualDate.toISOString().split('T')[0] + 'T' + formatHeure(startCheck));
+    const endDate = new Date(actualDate.toISOString().split('T')[0] + 'T' + formatHeure(endCheck));
     console.log(startDate, endDate);
     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
       throw new Error('Problème de format de date');
